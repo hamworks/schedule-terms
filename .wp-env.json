@@ -1,0 +1,12 @@
+{
+    "core": "WordPress/WordPress#5.9.3",
+    "port": 20000,
+    "plugins": [
+        "."
+    ],
+    "env": {
+        "tests": {
+            "port": 20001
+        }
+    }
+}

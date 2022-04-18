@@ -1,0 +1,73 @@
+{
+    "name": "@hamworks/schedule-terms",
+    "version": "0.0.1",
+    "private": true,
+    "author": "HIroshi Urabe <mail@torounit.com> (https://torounit.com)",
+    "license": "GPL-2.0+",
+    "scripts": {
+        "wp-env": "wp-env",
+        "test-unit-php": "wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/schedule-terms/phpunit.xml.dist --verbose'",
+        "packages-update": "wp-scripts packages-update",
+        "lint-php": "./vendor/bin/phpcs --standard=./.phpcs.xml.dist",
+        "test": "wp-scripts test-unit-js",
+        "start": "wp-scripts start",
+        "build": "wp-scripts build",
+        "format": "wp-scripts format",
+        "lint-js": "wp-scripts lint-js",
+        "lint-js:fix": "wp-scripts lint-js --fix",
+        "prepare": "husky install"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/team-hamworks/schedule-terms.git"
+    },
+    "devDependencies": {
+        "@wordpress/env": "^4.5.0",
+        "husky": "^7.0.4",
+        "lint-staged": "^12.3.8"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "packages/*/package.json": [
+            "wp-scripts lint-pkg-json"
+        ],
+        "{*.css,*.scss}": [
+            "npm run lint-style"
+        ],
+        "*.js": [
+            "npm run format-js",
+            "npm run lint-js"
+        ],
+        "*.php": [
+            "npm run lint-php"
+        ]
+    },
+    "release-it": {
+        "hooks": {
+            "before:bump": [
+                "composer install --optimize-autoloader --prefer-dist --no-dev",
+                "bash ./bin/create-release.sh schedule-terms ${version}",
+                "bash ./bin/create-zip.sh schedule-terms"
+            ],
+            "after:bump": "composer install --optimize-autoloader --prefer-dist",
+            "after:release": "bash ./bin/cleanup.sh schedule-terms"
+        },
+        "github": {
+            "release": true,
+            "assets": [
+                "schedule-terms.zip"
+            ]
+        },
+        "npm": {
+            "publish": false
+        }
+    },
+    "dependencies": {
+        "@wordpress/edit-post": "^6.3.1",
+        "@wordpress/scripts": "^22.4.0"
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "name": "hamworks/schedule-terms",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Hiroshi Urabe",
+            "email": "urabe@ham.works"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "php-di/php-di": "^6.3"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "phpcompatibility/phpcompatibility-wp": "*",
+        "squizlabs/php_codesniffer": "*",
+        "wp-coding-standards/wpcs": "*",
+        "yoast/phpunit-polyfills": "^1.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "HAMWORKS\\WP\\Schedule_Terms\\": "./includes",
+            "HAMWORKS\\WP\\Schedule_Terms\\Tests\\": "./tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "format": "phpcbf --standard=./phpcs.xml.dist --report-summary --report-source",
+        "lint": "phpcs --standard=./phpcs.xml.dist",
+        "phpcs": "phpcs --standard=./phpcs.xml.dist"
+    },
+    "config": {
+        "platform": {
+            "php": "7.2"
+        },
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
