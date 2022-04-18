@@ -17,6 +17,7 @@ class Plugin {
 	 */
 	public function __construct() {
 		new Assets();
+		new Term_UI( __DIR__ );
 	}
 
 }

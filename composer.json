@@ -21,6 +21,7 @@
     "autoload": {
         "psr-4": {
             "HAMWORKS\\WP\\Schedule_Terms\\": "./includes",
+            "JJJ\\WP\\Term\\Meta\\": "./lib/JJJ/WP/Term/Meta",
             "HAMWORKS\\WP\\Schedule_Terms\\Tests\\": "./tests"
         }
     },
