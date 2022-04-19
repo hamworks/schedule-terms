@@ -33,15 +33,17 @@ class Term_UI extends UI {
 	 *
 	 * @var string
 	 */
-	public $meta_key = 'use_schedule';
+	public $meta_key = '';
 
 	/**
 	 * Constrouctor.
 	 *
 	 * @param string $file Plugin file.
+	 * @param string $meta_key Metadata key.
 	 */
-	public function __construct( $file = '' ) {
-		$this->labels = array(
+	public function __construct( $file, string $meta_key ) {
+		$this->meta_key = $meta_key;
+		$this->labels   = array(
 			'singular' => esc_html__( 'Scheduled', 'schedule-posts' ),
 		);
 
