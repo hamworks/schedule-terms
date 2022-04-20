@@ -28,7 +28,7 @@ class Term_Manager {
 		$this->post_meta_key = $post_meta_key;
 
 		add_action( 'wp_after_insert_post', array( $this, 'update_schedule' ), 100, 1 );
-		add_action( "${post_meta_key}_update_terms", array( $this, 'update_terms' ), 10, 4 );
+		add_action( "${post_meta_key}_update_terms", array( $this, 'update_post_term_relations' ), 10, 4 );
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Term_Manager {
 	 *
 	 * @return int
 	 */
-	private function get_timestamp( string $iso_datetime ) {
+	private function get_timestamp( string $iso_datetime ): int {
 		try {
 			$date_time = new \DateTime( $iso_datetime );
 		} catch ( \Exception $e ) {
@@ -87,7 +87,7 @@ class Term_Manager {
 		$post_meta_key = $this->post_meta_key;
 		wp_clear_scheduled_hook( "${post_meta_key}_update_terms", array( $post_id ) );
 
-		$this->update_terms( $post_id );
+		$this->update_post_term_relations( $post_id );
 
 		foreach ( $this->get_schedules( $post_id ) as $meta_value ) {
 			if ( $meta_value ) {
@@ -100,13 +100,13 @@ class Term_Manager {
 	}
 
 	/**
-	 * Update post terms ralation.
+	 * Update post terms relation.
 	 *
 	 * @param int $post_id post ID.
 	 *
 	 * @return void
 	 */
-	public function update_terms( int $post_id ) {
+	public function update_post_term_relations( int $post_id ) {
 		foreach ( $this->get_schedules( $post_id ) as $meta_value ) {
 			if ( $meta_value ) {
 				$time = $this->get_timestamp( $meta_value['datetime'] );
