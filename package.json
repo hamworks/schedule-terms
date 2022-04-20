@@ -8,7 +8,7 @@
         "wp-env": "wp-env",
         "test-unit-php": "wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/schedule-terms/phpunit.xml.dist --verbose'",
         "packages-update": "wp-scripts packages-update",
-        "lint-php": "./vendor/bin/phpcs --standard=./.phpcs.xml.dist",
+        "lint-php": "./vendor/bin/phpcs --standard=./phpcs.xml.dist",
         "test": "wp-scripts test-unit-js",
         "start": "wp-scripts start ./src/admin/ ./src/editor/",
         "build": "wp-scripts build ./src/admin/ ./src/editor/",

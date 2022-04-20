@@ -1,7 +1,10 @@
 <?php
 /**
  * The Term Meta class.
+ *
+ * @package Schedule_Terms
  */
+
 namespace HAMWORKS\WP\Schedule_Terms;
 
 /**
