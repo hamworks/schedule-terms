@@ -11,8 +11,10 @@ class Term_Meta {
 
 	/**
 	 * The single instance of the class.
+	 *
+	 * @param string $meta_key The meta key.
 	 */
-	public function __construct( $meta_key ) {
+	public function __construct( string $meta_key ) {
 		foreach ( get_taxonomies() as $taxonomy ) {
 			register_term_meta(
 				$taxonomy,

@@ -32,32 +32,67 @@ class Term_Manager {
 	}
 
 	/**
+	 * Get term schedules.
+	 *
+	 * @param int $post_id Post id.
+	 *
+	 * @return array
+	 */
+	private function get_schedules( int $post_id ): array {
+		$meta_values = get_post_meta( $post_id, $this->post_meta_key, false );
+		if ( empty( $meta_values ) ) {
+			return array();
+		}
+
+		$attach_terms = array_filter(
+			$meta_values,
+			function ( $value ) {
+				return 'attach' === $value['type'];
+			}
+		);
+
+		$detach_terms = array_filter(
+			$meta_values,
+			function ( $value ) {
+				return 'detach' === $value['type'];
+			}
+		);
+
+		return array_merge( $attach_terms, $detach_terms );
+	}
+
+	/**
+	 * Get unixtime.
+	 *
+	 * @param string $iso_datetime ISO 8601 formatted datetime.
+	 *
+	 * @return int
+	 */
+	private function get_timestamp( string $iso_datetime ) {
+		try {
+			$date_time = new \DateTime( $iso_datetime );
+		} catch ( \Exception $e ) {
+			wp_die( esc_html( $e->getMessage() ) );
+		}
+
+		return $date_time->getTimestamp();
+	}
+
+	/**
 	 * Scheduled update.
 	 *
 	 * @param int $post_id post ID.
 	 */
 	public function update_schedule( int $post_id ) {
 		$post_meta_key = $this->post_meta_key;
-		$meta_values   = get_post_meta( $post_id, $post_meta_key, false );
 		wp_clear_scheduled_hook( "${post_meta_key}_update_terms", array( $post_id ) );
-		foreach ( $meta_values as $meta_value ) {
-			if ( $meta_value ) {
-				try {
-					$date_time = new \DateTime( $meta_value['datetime'] );
-				} catch ( \Exception $e ) {
-					wp_die( esc_html( $e->getMessage() ) );
-				}
-				$time = $date_time->getTimestamp();
-				$term = get_term_by( 'slug', $meta_value['term'], $meta_value['taxonomy'] );
 
-				if ( time() > $time ) {
-					if ( 'attach' === $meta_value['type'] ) {
-						wp_set_post_terms( $post_id, array( $term->term_id ), $meta_value['taxonomy'], true );
-					} else {
-						$term = get_term_by( 'slug', $meta_value['term'], $meta_value['taxonomy'] );
-						wp_remove_object_terms( $post_id, $term->term_id, $meta_value['taxonomy'] );
-					}
-				} else {
+		$this->update_terms( $post_id );
+
+		foreach ( $this->get_schedules( $post_id ) as $meta_value ) {
+			if ( $meta_value ) {
+				$time = $this->get_timestamp( $meta_value['datetime'] );
+				if ( time() < $time ) {
 					wp_schedule_single_event( $time, "${post_meta_key}_update_terms", array( $post_id ) );
 				}
 			}
@@ -65,29 +100,21 @@ class Term_Manager {
 	}
 
 	/**
+	 * Update post terms ralation.
+	 *
 	 * @param int $post_id post ID.
 	 *
 	 * @return void
 	 */
 	public function update_terms( int $post_id ) {
-		$post_meta_key = $this->post_meta_key;
-		$meta_values   = get_post_meta( $post_id, $post_meta_key, false );
-		// TODO: attach から処理するように.
-		foreach ( $meta_values as $meta_value ) {
+		foreach ( $this->get_schedules( $post_id ) as $meta_value ) {
 			if ( $meta_value ) {
-				try {
-					$date_time = new \DateTime( $meta_value['datetime'] );
-				} catch ( \Exception $e ) {
-					wp_die( esc_html( $e->getMessage() ) );
-				}
-				$time = $date_time->getTimestamp();
+				$time = $this->get_timestamp( $meta_value['datetime'] );
 				$term = get_term_by( 'slug', $meta_value['term'], $meta_value['taxonomy'] );
-
-				if ( time() > $time ) {
+				if ( time() >= $time ) {
 					if ( 'attach' === $meta_value['type'] ) {
 						wp_set_post_terms( $post_id, array( $term->term_id ), $meta_value['taxonomy'], true );
 					} else {
-						$term = get_term_by( 'slug', $meta_value['term'], $meta_value['taxonomy'] );
 						wp_remove_object_terms( $post_id, $term->term_id, $meta_value['taxonomy'] );
 					}
 				}
