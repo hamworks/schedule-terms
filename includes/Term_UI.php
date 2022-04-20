@@ -77,7 +77,7 @@ class Term_UI extends UI {
 	protected function format_output( $meta = '' ) {
 		if ( $meta ) {
 			?>
-			<span data-use-schedule><?php esc_html_e( 'Use Schedule', 'schedule-posts' ); ?></span>
+			<span data-schedule-terms-active><?php esc_html_e( 'Use Schedule', 'schedule-posts' ); ?></span>
 			<?php
 		}
 	}

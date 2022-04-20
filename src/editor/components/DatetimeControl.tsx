@@ -16,12 +16,14 @@ const TIMEZONELESS_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 interface DatetimeControlProps {
 	label: string;
 	term: string;
+	taxonomy: string;
 	postType: string;
 	type: 'attach' | 'detach';
 }
 
 export const DatetimeControl = ( {
 	term,
+	taxonomy,
 	label,
 	postType,
 	type,
@@ -50,6 +52,7 @@ export const DatetimeControl = ( {
 				...otherItems,
 				datetime && {
 					term,
+					taxonomy,
 					type,
 					// convert to UTC.
 					datetime: moment(`${ datetime }${ getTimezoneOffsetString() }`).utc().format(),

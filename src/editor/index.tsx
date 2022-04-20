@@ -40,12 +40,14 @@ const ControlUI = ({ taxonomies, terms, currentPostType }: Props) => {
 								<DatetimeControl
 									label="Attach"
 									term={term.slug}
+									taxonomy={taxonomy.slug}
 									type="attach"
 									postType={currentPostType}
 								/>
 								<DatetimeControl
 									label="Detach"
 									term={term.slug}
+									taxonomy={taxonomy.slug}
 									type="detach"
 									postType={currentPostType}
 								/>
@@ -70,7 +72,7 @@ const PluginDocumentSetting = () => {
 			_taxonomies.map((taxonomy) => {
 				const terms = getEntityRecords('taxonomy', taxonomy.slug, {
 					per_page: -1,
-				})?.filter(({ meta: { use_schedule } }) => use_schedule);
+				})?.filter(({ meta: { schedule_terms_active } }) => schedule_terms_active);
 				return [taxonomy.slug, terms];
 			})
 		);
@@ -84,9 +86,9 @@ const PluginDocumentSetting = () => {
 
 	return (
 		<PluginDocumentSettingPanel
-			name="custom-panel"
-			title="Custom Panel"
-			className="custom-panel"
+			name="schedule-terms"
+			title="Schedule Terms"
+			className="schedule-terms"
 		>
 			<ControlUI
 				currentPostType={postType}
@@ -99,5 +101,5 @@ const PluginDocumentSetting = () => {
 
 registerPlugin('schedule-terms', {
 	render: PluginDocumentSetting,
-	icon: 'palmtree',
+	icon: 'clock',
 });

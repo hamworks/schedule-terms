@@ -25,6 +25,9 @@ class Post_Meta {
 					'term'     => array(
 						'type' => 'string',
 					),
+					'taxonomy' => array(
+						'type' => 'string',
+					),
 					'type'     => array(
 						'type' => 'string',
 						'enum' => array( 'attach', 'detach' ),
