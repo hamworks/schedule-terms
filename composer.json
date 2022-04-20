@@ -16,6 +16,8 @@
         "phpcompatibility/phpcompatibility-wp": "*",
         "squizlabs/php_codesniffer": "*",
         "wp-coding-standards/wpcs": "*",
+        "wp-phpunit/wp-phpunit": "^5.9.3",
+
         "yoast/phpunit-polyfills": "^1.0.1"
     },
     "autoload": {
