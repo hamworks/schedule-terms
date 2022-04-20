@@ -1,12 +1,12 @@
-import { registerPlugin } from "@wordpress/plugins";
-import { useSelect } from "@wordpress/data";
+import { registerPlugin } from '@wordpress/plugins';
+import { useSelect } from '@wordpress/data';
 // @ts-ignore
-import { store as coreStore, useEntityProp } from "@wordpress/core-data";
+import { store as coreStore, useEntityProp } from '@wordpress/core-data';
 // @ts-ignore
-import { store as editorStore } from "@wordpress/editor";
-import { PluginDocumentSettingPanel } from "@wordpress/edit-post";
-import { Button, DateTimePicker } from "@wordpress/components";
-import { WP_Taxonomy_Name } from "wp-types"; // TODO: replace to stable api.
+import { store as editorStore } from '@wordpress/editor';
+import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
+import { WP_Taxonomy_Name } from 'wp-types';
+import { DatetimeControl } from './components/DatetimeControl';
 
 interface Term {
 	id: number;
@@ -19,7 +19,6 @@ interface Term {
 	parent: number;
 	count: number;
 }
-
 interface Props {
 	currentPostType: string;
 	taxonomies: Term[];
@@ -27,72 +26,31 @@ interface Props {
 }
 
 const ControlUI = ({ taxonomies, terms, currentPostType }: Props) => {
-	//const { timezone } = getDateSettings();
-	const [meta, setMeta] = useEntityProp("postType", currentPostType, "meta");
-
-	const updateDatetime = (key: string) => {
-		return (term: string, datetime: string) => {
-			setMeta({
-				...meta,
-				[key]: [
-					...meta[key]?.filter((item) => item.term !== term),
-					{
-						term,
-						datetime,
-					},
-				],
-			});
-		};
-	};
-
-	const updateAttachDateTime = updateDatetime(
-		"use_schedule_set_attach_datetime"
-	);
-	const updateDetachDateTime = updateDatetime(
-		"use_schedule_set_detach_datetime"
-	);
-
-	const getDatetime = (key: string) => {
-		return (term: string) => {
-			if (!Array.isArray(meta[key])) {
-				return "";
-			}
-			const { datetime } = meta[key].find((item) => item.term === term);
-			return datetime;
-		};
-	};
-
-	const getAttachDateTime = getDatetime("use_schedule_set_attach_datetime");
-	const getDetachDateTime = getDatetime("use_schedule_set_detach_datetime");
-
 	return (
 		<div>
 			{taxonomies?.map((taxonomy) => (
 				<div key={taxonomy.slug}>
-					{taxonomy.slug}
-					{terms[taxonomy.slug]?.map((term) => {
-						console.log(meta);
-						return (
+					{terms[taxonomy.slug] &&
+						terms[taxonomy.slug].length > 0 &&
+						terms[taxonomy.slug]?.map((term) => (
 							<div key={term.id}>
-								<h4>{term.name}</h4>
-								<h5>Attach Datetime</h5>
-								<Button>Attach Datetime</Button>
-								<DateTimePicker
-									currentDate={getAttachDateTime(term.slug)}
-									onChange={(newDate) =>
-										updateAttachDateTime(term.slug, newDate)
-									}
+								<h4>
+									{taxonomy.slug}: {term.name}
+								</h4>
+								<DatetimeControl
+									label="Attach"
+									term={term.slug}
+									type="attach"
+									postType={currentPostType}
 								/>
-								<h5>Detach DateTime</h5>
-								<DateTimePicker
-									currentDate={getDetachDateTime(term.slug)}
-									onChange={(newDate) =>
-										updateDetachDateTime(term.slug, newDate)
-									}
+								<DatetimeControl
+									label="Detach"
+									term={term.slug}
+									type="detach"
+									postType={currentPostType}
 								/>
 							</div>
-						);
-					})}
+						))}
 				</div>
 			))}
 		</div>
@@ -110,7 +68,7 @@ const PluginDocumentSetting = () => {
 		);
 		const _terms = Object.fromEntries(
 			_taxonomies.map((taxonomy) => {
-				const terms = getEntityRecords("taxonomy", taxonomy.slug, {
+				const terms = getEntityRecords('taxonomy', taxonomy.slug, {
 					per_page: -1,
 				})?.filter(({ meta: { use_schedule } }) => use_schedule);
 				return [taxonomy.slug, terms];
@@ -139,7 +97,7 @@ const PluginDocumentSetting = () => {
 	);
 };
 
-registerPlugin("schedule-terms", {
+registerPlugin('schedule-terms', {
 	render: PluginDocumentSetting,
-	icon: "palmtree",
+	icon: 'palmtree',
 });
