@@ -28,7 +28,7 @@ class Term_Manager {
 		$this->post_meta_key = $post_meta_key;
 
 		add_action( 'wp_after_insert_post', array( $this, 'update_schedule' ), 100, 1 );
-		add_action( "${post_meta_key}_update_terms", array( $this, 'update_post_term_relations' ), 10, 4 );
+		add_action( 'schedule_terms_update_post_term_relations', array( $this, 'update_post_term_relations' ), 10, 4 );
 	}
 
 	/**
@@ -84,8 +84,7 @@ class Term_Manager {
 	 * @param int $post_id post ID.
 	 */
 	public function update_schedule( int $post_id ) {
-		$post_meta_key = $this->post_meta_key;
-		wp_clear_scheduled_hook( "${post_meta_key}_update_terms", array( $post_id ) );
+		wp_clear_scheduled_hook( 'schedule_terms_update_post_term_relations', array( $post_id ) );
 
 		$this->update_post_term_relations( $post_id );
 
@@ -93,7 +92,7 @@ class Term_Manager {
 			if ( $meta_value ) {
 				$time = $this->get_timestamp( $meta_value['datetime'] );
 				if ( time() < $time ) {
-					wp_schedule_single_event( $time, "${post_meta_key}_update_terms", array( $post_id ) );
+					wp_schedule_single_event( $time, 'schedule_terms_update_post_term_relations', array( $post_id ) );
 				}
 			}
 		}
