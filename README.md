@@ -22,3 +22,8 @@ Check the "use schedule" checkbox in the category or tag management screen. You 
 
 ### 1.0.0
 * First release.
+
+## Credits
+
+* [WP Term Meta UI](https://github.com/JJJ/wp-term-meta-ui/)
+

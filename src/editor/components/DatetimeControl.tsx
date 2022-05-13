@@ -1,28 +1,32 @@
 // @ts-ignore
-import { useEntityProp } from '@wordpress/core-data';
-import { useRef } from '@wordpress/element';
+import { useEntityProp } from "@wordpress/core-data";
+import { useRef } from "@wordpress/element";
+import { __ } from "@wordpress/i18n";
 import {
 	Button,
 	DateTimePicker,
 	Dropdown,
 	PanelRow,
-} from '@wordpress/components';
-import { __experimentalGetSettings as getSettings } from '@wordpress/date';
+} from "@wordpress/components";
+import {
+	dateI18n,
+	__experimentalGetSettings as getSettings,
+} from "@wordpress/date";
 // @ts-ignore
-import moment from 'moment';
+import moment from "moment";
 
-const TIMEZONELESS_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
+const TIMEZONELESS_FORMAT = "YYYY-MM-DDTHH:mm:ss";
 
 interface DatetimeControlProps {
 	label: string;
 	term: string;
 	taxonomy: string;
 	postType: string;
-	type: 'attach' | 'detach';
+	type: "attach" | "detach";
 }
 
 interface ScheduleTermsMeta {
-	type: 'attach' | 'detach';
+	type: "attach" | "detach";
 	datetime: string;
 	term: string;
 	taxonomy: string;
@@ -42,21 +46,35 @@ export const DatetimeControl = ( {
 	type,
 }: DatetimeControlProps ) => {
 	const [ meta, setMeta ]: [ PostMeta, ( meta: PostMeta ) => void ] = useEntityProp(
-		'postType',
+		"postType",
 		postType,
-		'meta'
+		"meta"
 	);
 	const anchorRef = useRef();
+	const dateSettings = getSettings();
+
+	// @ts-ignore
+	const [ siteFormat = dateSettings.formats.date ] = useEntityProp(
+		"root",
+		"site",
+		"date_format"
+	);
+	// @ts-ignore
+	const [ siteTimeFormat = dateSettings.formats.time ] = useEntityProp(
+		"root",
+		"site",
+		"time_format"
+	);
 
 	const getTimezoneOffsetString = () => {
 		// @ts-ignore
-		const { timezone } = getSettings();
-		const [ hour, time ] = timezone.offset.toString().split( '.' );
-		return `${ Number( hour ) > 0 ? '+' : '-' }${ String(
+		const { timezone } = dateSettings;
+		const [ hour, time ] = timezone.offset.toString().split( "." );
+		return `${ Number( hour ) > 0 ? "+" : "-" }${ String(
 			Math.abs( hour )
-		).padStart( 2, '0' ) }:${ String(
+		).padStart( 2, "0" ) }:${ String(
 			Math.floor( Number( `0.${ time || 0 }` ) * 60 )
-		).padStart( 2, '0' ) }`;
+		).padStart( 2, "0" ) }`;
 	};
 
 	const updateDatetime = ( datetime: string ) => {
@@ -86,7 +104,7 @@ export const DatetimeControl = ( {
 		} );
 	};
 
-	const getDatetime = () => {
+	const getDatetime = ( format = TIMEZONELESS_FORMAT ) => {
 		const val = meta.schedule_terms?.find( ( item ) => {
 			return item.term === term && item.type === type;
 		} );
@@ -94,11 +112,14 @@ export const DatetimeControl = ( {
 		if ( val?.datetime ) {
 			return moment( val.datetime )
 			.utcOffset( getTimezoneOffsetString() )
-			.format( TIMEZONELESS_FORMAT );
+			.format( format );
 		}
 
 		return undefined;
 	};
+
+
+	const datetime = getDatetime();
 
 	return (
 		// @ts-ignore
@@ -115,14 +136,22 @@ export const DatetimeControl = ( {
 							aria-expanded={ isOpen }
 							variant="tertiary"
 						>
-							{ getDatetime() || 'none' }
+							{
+								datetime
+									// @ts-ignore
+									? dateI18n(
+										`${ siteFormat } ${ siteTimeFormat }`,
+										datetime
+									)
+									: __( "none", "schedule-terms" )
+							}
 						</Button>
 					</>
 				) }
 				renderContent={ () => (
 					<div>
 						<DateTimePicker
-							currentDate={ getDatetime() }
+							currentDate={ datetime }
 							onChange={ ( newDate ) => updateDatetime( newDate ) }
 						/>
 					</div>
