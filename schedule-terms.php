@@ -9,7 +9,7 @@
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:     schedule-terms
  * Domain Path:     /languages
- * Version: 0.1.0
+ * Version: 0.1.1
  *
  * @package Schedule_Terms
  */
