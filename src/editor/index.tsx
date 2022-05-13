@@ -1,12 +1,13 @@
-import { registerPlugin } from '@wordpress/plugins';
-import { useSelect } from '@wordpress/data';
+import { registerPlugin } from "@wordpress/plugins";
+import { useSelect } from "@wordpress/data";
 // @ts-ignore
-import { store as coreStore, useEntityProp } from '@wordpress/core-data';
+import { store as coreStore, useEntityProp } from "@wordpress/core-data";
 // @ts-ignore
-import { store as editorStore } from '@wordpress/editor';
-import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
-import type { WP_Taxonomy_Name } from 'wp-types';
-import { DatetimeControl } from './components/DatetimeControl';
+import { store as editorStore } from "@wordpress/editor";
+import { PluginDocumentSettingPanel } from "@wordpress/edit-post";
+import type { WP_Taxonomy_Name } from "wp-types";
+import { DatetimeControl } from "./components/DatetimeControl";
+import { __ } from "@wordpress/i18n";
 
 interface Term {
 	id: number;
@@ -43,14 +44,14 @@ const ControlUI = ( { taxonomies, terms, currentPostType }: Props ) => {
 								  { taxonomy.slug }: { term.name }
 							  </h4>
 							  <DatetimeControl
-								  label="Attach"
+								  label={ __( 'Attach', 'schedule-terms' ) }
 								  term={ term.slug }
 								  taxonomy={ taxonomy.slug }
 								  type="attach"
 								  postType={ currentPostType }
 							  />
 							  <DatetimeControl
-								  label="Detach"
+								  label={ __( 'Detach', 'schedule-terms' ) }
 								  term={ term.slug }
 								  taxonomy={ taxonomy.slug }
 								  type="detach"
@@ -78,7 +79,7 @@ const PluginDocumentSetting = () => {
 		) as Taxonomy[];
 		const _terms = Object.fromEntries(
 			_taxonomies.map( ( taxonomy ) => {
-				const terms = getEntityRecords( 'taxonomy', taxonomy.slug, {
+				const terms = getEntityRecords( "taxonomy", taxonomy.slug, {
 					per_page: -1,
 				} )?.filter(
 					(
@@ -100,7 +101,7 @@ const PluginDocumentSetting = () => {
 	return (
 		<PluginDocumentSettingPanel
 			name="schedule-terms"
-			title="Schedule Terms"
+			title={ __( 'Schedule Terms', 'schedule-terms' ) }
 			className="schedule-terms"
 		>
 			<ControlUI
