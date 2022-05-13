@@ -21,6 +21,19 @@ interface DatetimeControlProps {
 	type: 'attach' | 'detach';
 }
 
+interface ScheduleTermsMeta {
+	type: 'attach' | 'detach';
+	datetime: string;
+	term: string;
+	taxonomy: string;
+}
+
+interface PostMeta {
+	[ key: string ]: any;
+
+	schedule_terms: ScheduleTermsMeta[];
+}
+
 export const DatetimeControl = ( {
 	term,
 	taxonomy,
@@ -28,14 +41,20 @@ export const DatetimeControl = ( {
 	postType,
 	type,
 }: DatetimeControlProps ) => {
-	const [ meta, setMeta ] = useEntityProp( 'postType', postType, 'meta' );
+	const [ meta, setMeta ]: [ PostMeta, ( meta: PostMeta ) => void ] = useEntityProp(
+		'postType',
+		postType,
+		'meta'
+	);
 	const anchorRef = useRef();
 
 	const getTimezoneOffsetString = () => {
 		// @ts-ignore
 		const { timezone } = getSettings();
 		const [ hour, time ] = timezone.offset.toString().split( '.' );
-		return `${ Number( hour ) > 0 ? '+' : '-' }${ String( Math.abs( hour ) ).padStart( 2, '0' ) }:${ String(
+		return `${ Number( hour ) > 0 ? '+' : '-' }${ String(
+			Math.abs( hour )
+		).padStart( 2, '0' ) }:${ String(
 			Math.floor( Number( `0.${ time || 0 }` ) * 60 )
 		).padStart( 2, '0' ) }`;
 	};
@@ -50,14 +69,20 @@ export const DatetimeControl = ( {
 			...meta,
 			schedule_terms: [
 				...otherItems,
-				datetime && {
-					term,
-					taxonomy,
-					type,
-					// convert to UTC.
-					datetime: moment(`${ datetime }${ getTimezoneOffsetString() }`).utc().format(),
-				},
-			].filter( ( e ) => e ),
+				datetime
+					? {
+						term,
+						taxonomy,
+						type,
+						// convert to UTC.
+						datetime: moment(
+							`${ datetime }${ getTimezoneOffsetString() }`
+						)
+						.utc()
+						.format(),
+					}
+					: null,
+			].filter( ( e ): e is ScheduleTermsMeta => e !== null ),
 		} );
 	};
 
@@ -67,7 +92,9 @@ export const DatetimeControl = ( {
 		} );
 
 		if ( val?.datetime ) {
-			return moment(val.datetime).utcOffset( getTimezoneOffsetString() ).format( TIMEZONELESS_FORMAT );
+			return moment( val.datetime )
+			.utcOffset( getTimezoneOffsetString() )
+			.format( TIMEZONELESS_FORMAT );
 		}
 
 		return undefined;

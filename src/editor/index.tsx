@@ -5,7 +5,7 @@ import { store as coreStore, useEntityProp } from '@wordpress/core-data';
 // @ts-ignore
 import { store as editorStore } from '@wordpress/editor';
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
-import { WP_Taxonomy_Name } from 'wp-types';
+import type { WP_Taxonomy_Name } from 'wp-types';
 import { DatetimeControl } from './components/DatetimeControl';
 
 interface Term {
@@ -19,62 +19,75 @@ interface Term {
 	parent: number;
 	count: number;
 }
+
+interface Taxonomy {
+	slug: string;
+}
+
 interface Props {
 	currentPostType: string;
-	taxonomies: Term[];
+	taxonomies: Taxonomy[];
 	terms: Record<string, Term[]>;
 }
 
-const ControlUI = ({ taxonomies, terms, currentPostType }: Props) => {
+const ControlUI = ( { taxonomies, terms, currentPostType }: Props ) => {
 	return (
 		<div>
-			{taxonomies?.map((taxonomy) => (
-				<div key={taxonomy.slug}>
-					{terms[taxonomy.slug] &&
-						terms[taxonomy.slug].length > 0 &&
-						terms[taxonomy.slug]?.map((term) => (
-							<div key={term.id}>
-								<h4>
-									{taxonomy.slug}: {term.name}
-								</h4>
-								<DatetimeControl
-									label="Attach"
-									term={term.slug}
-									taxonomy={taxonomy.slug}
-									type="attach"
-									postType={currentPostType}
-								/>
-								<DatetimeControl
-									label="Detach"
-									term={term.slug}
-									taxonomy={taxonomy.slug}
-									type="detach"
-									postType={currentPostType}
-								/>
-							</div>
-						))}
+			{ taxonomies?.map( ( taxonomy ) => (
+				<div key={ taxonomy.slug }>
+					{ terms[ taxonomy.slug ] &&
+					  terms[ taxonomy.slug ].length > 0 &&
+					  terms[ taxonomy.slug ]?.map( ( term ) => (
+						  <div key={ term.id }>
+							  <h4>
+								  { taxonomy.slug }: { term.name }
+							  </h4>
+							  <DatetimeControl
+								  label="Attach"
+								  term={ term.slug }
+								  taxonomy={ taxonomy.slug }
+								  type="attach"
+								  postType={ currentPostType }
+							  />
+							  <DatetimeControl
+								  label="Detach"
+								  term={ term.slug }
+								  taxonomy={ taxonomy.slug }
+								  type="detach"
+								  postType={ currentPostType }
+							  />
+						  </div>
+					  ) ) }
 				</div>
-			))}
+			) ) }
 		</div>
 	);
 };
 
 const PluginDocumentSetting = () => {
-	const { postType, taxonomies, terms } = useSelect((select) => {
+	const { postType, taxonomies, terms } = useSelect( ( select ) => {
 		// @ts-ignore
-		const { getTaxonomies, getEntityRecords } = select(coreStore);
+		const { getTaxonomies, getEntityRecords } = select( coreStore );
 		// @ts-ignore
-		const _postType = select(editorStore).getCurrentPostType();
-		const _taxonomies = (getTaxonomies({ per_page: -1 }) || []).filter(
-			(taxonomy) => taxonomy.types.includes(_postType)
-		);
+		const _postType = select( editorStore ).getCurrentPostType() as string;
+		const _taxonomies = (
+			getTaxonomies( { per_page: -1 } ) || []
+		).filter(
+			// @ts-ignore
+			( taxonomy ) => taxonomy.types.includes( _postType )
+		) as Taxonomy[];
 		const _terms = Object.fromEntries(
-			_taxonomies.map((taxonomy) => {
-				const terms = getEntityRecords('taxonomy', taxonomy.slug, {
+			_taxonomies.map( ( taxonomy ) => {
+				const terms = getEntityRecords( 'taxonomy', taxonomy.slug, {
 					per_page: -1,
-				})?.filter(({ meta: { schedule_terms_active } }) => schedule_terms_active);
-				return [taxonomy.slug, terms];
-			})
+				} )?.filter(
+					(
+						// @ts-ignore
+						{ meta: { schedule_terms_active } }
+					) => schedule_terms_active
+				);
+				return [ taxonomy.slug, terms as Term[] ];
+			} )
 		);
 
 		return {
@@ -82,7 +95,7 @@ const PluginDocumentSetting = () => {
 			taxonomies: _taxonomies,
 			terms: _terms,
 		};
-	});
+	} );
 
 	return (
 		<PluginDocumentSettingPanel
@@ -91,15 +104,15 @@ const PluginDocumentSetting = () => {
 			className="schedule-terms"
 		>
 			<ControlUI
-				currentPostType={postType}
-				taxonomies={taxonomies}
-				terms={terms}
+				currentPostType={ postType }
+				taxonomies={ taxonomies }
+				terms={ terms }
 			/>
 		</PluginDocumentSettingPanel>
 	);
 };
 
-registerPlugin('schedule-terms', {
+registerPlugin( 'schedule-terms', {
 	render: PluginDocumentSetting,
 	icon: 'clock',
-});
+} );
