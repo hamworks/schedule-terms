@@ -22,6 +22,7 @@
         "url": "https://github.com/team-hamworks/schedule-terms.git"
     },
     "devDependencies": {
+        "@wordpress/scripts": "^22.4.0",
         "@wordpress/env": "^4.5.0",
         "husky": "^7.0.4",
         "lint-staged": "^12.3.8"
@@ -73,8 +74,12 @@
         "@types/wordpress__edit-post": "^4.0.1",
         "@types/wordpress__editor": "^11.0.0",
         "@types/wordpress__plugins": "^3.0.0",
-        "@wordpress/edit-post": "^6.3.1",
-        "@wordpress/scripts": "^22.4.0",
+        "@wordpress/components": "^19.10.0",
+        "@wordpress/core-data": "^4.6.0",
+        "@wordpress/data": "^6.8.0",
+        "@wordpress/edit-post": "^6.5.0",
+        "@wordpress/editor": "^12.7.0",
+        "@wordpress/plugins": "^4.6.0",
         "wp-types": "^3.59.1"
     }
 }
