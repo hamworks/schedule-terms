@@ -82,7 +82,6 @@ class Term_UI extends UI {
 			<?php
 		}
 		$contents = ob_get_contents();
-		echo $contents; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		ob_end_clean();
 
 		if ( ! $contents ) {
