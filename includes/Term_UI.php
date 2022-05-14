@@ -7,7 +7,7 @@
 
 namespace HAMWORKS\WP\Schedule_Terms;
 
-use JJJ\WP\Term\Meta\UI;
+use HAMWORKS\WP\Schedule_Terms\Term\UI;
 
 /**
  * Term meta UI controller.
@@ -44,7 +44,7 @@ class Term_UI extends UI {
 	public function __construct( $file, string $meta_key ) {
 		$this->meta_key = $meta_key;
 		$this->labels   = array(
-			'singular' => esc_html__( 'Scheduled', 'schedule-posts' ),
+			'singular' => esc_html__( 'Use scheduling', 'schedule-posts' ),
 		);
 
 		parent::__construct( $file );
@@ -74,12 +74,22 @@ class Term_UI extends UI {
 	 *
 	 * @param mixed $meta term meta.
 	 */
-	protected function format_output( $meta = '' ) {
+	protected function format_output( $meta ): string {
+		ob_start();
 		if ( $meta ) {
 			?>
-			<span data-schedule-terms-active><?php esc_html_e( 'Use Schedule', 'schedule-posts' ); ?></span>
+			<span data-schedule-terms-active><?php esc_html_e( 'Scheduling', 'schedule-posts' ); ?></span>
 			<?php
 		}
+		$contents = ob_get_contents();
+		echo $contents; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		ob_end_clean();
+
+		if ( ! $contents ) {
+			return '';
+		}
+
+		return $contents;
 	}
 
 	/**
@@ -99,6 +109,9 @@ class Term_UI extends UI {
 			id="term-<?php echo esc_attr( $this->meta_key ); ?>"
 			<?php checked( ! ! $value, true, true ); ?>
 		/>
+		<label for="term-<?php echo esc_attr( $this->meta_key ); ?>">
+			<?php esc_html_e( 'Use automatic term attach / detach.', 'schedule-posts' ); ?>
+		</label>
 		<?php
 	}
 
@@ -108,6 +121,7 @@ class Term_UI extends UI {
 	protected function quick_edit_form_field() {
 		?>
 		<input type="checkbox" name="term-<?php echo esc_attr( $this->meta_key ); ?>">
+		<?php esc_html_e( 'Use automatic term attach / detach.', 'schedule-posts' ); ?>
 		<?php
 	}
 
