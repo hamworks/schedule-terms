@@ -8,7 +8,7 @@ document.addEventListener( 'click', function ( e ) {
 			.getElementById( id )
 			?.querySelector( '[data-schedule-terms-active]' );
 			const checkbox = document.querySelector(
-				'.inline-edit-row input[name=term-use_schedule]'
+				'.inline-edit-row input[name=term-schedule_terms_active]'
 			) as HTMLInputElement;
 			checkbox.checked = checked;
 		}
