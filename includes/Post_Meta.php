@@ -11,6 +11,12 @@ namespace HAMWORKS\WP\Schedule_Terms;
  * Register post meta.
  */
 class Post_Meta {
+	/**
+	 * Post meta key.
+	 *
+	 * @var string
+	 */
+	private $meta_key;
 
 	/**
 	 * Constructor.
@@ -18,6 +24,14 @@ class Post_Meta {
 	 * @param string $meta_key post meta key.
 	 */
 	public function __construct( string $meta_key ) {
+		$this->meta_key = $meta_key;
+		add_action( 'init', array( $this, 'init' ), 100 );
+	}
+
+	/**
+	 * Init.
+	 */
+	public function init() {
 		foreach ( get_post_types() as $post_type ) {
 			$schema = array(
 				'type'       => 'object',
@@ -41,7 +55,7 @@ class Post_Meta {
 
 			register_post_meta(
 				$post_type,
-				$meta_key,
+				$this->meta_key,
 				array(
 
 					'single'       => false,
