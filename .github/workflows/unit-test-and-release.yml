@@ -59,10 +59,11 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: '14'
+              if: contains(github.ref, 'tags/')
 
             - name: npm install
               run: npm ci
-
+              if: contains(github.ref, 'tags/')
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
