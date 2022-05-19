@@ -23,6 +23,11 @@ class Assets {
 	 * Enqueue block editor assets.
 	 */
 	public function enqueue_block_editor_assets() {
+		$current_screen = get_current_screen();
+		if ( 'post' !== $current_screen->base ) {
+			return;
+		}
+
 		$asset_file = include plugin_dir_path( __DIR__ ) . 'build/editor.asset.php';
 
 		foreach ( $asset_file['dependencies'] as $style ) {
