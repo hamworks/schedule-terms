@@ -20,6 +20,9 @@ Check the "use schedule" checkbox in the category or tag management screen. You 
 
 ## Changelog
 
+### 1.0.2
+* fix ci.
+
 ### 1.0.0
 * First release.
 
