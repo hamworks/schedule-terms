@@ -80,7 +80,7 @@ export const DatetimeControl = ( {
 	const updateDatetime = ( datetime: string ) => {
 		const otherItems = meta?.schedule_terms?.filter( ( item ) => {
 			return !(
-				item.term === term && item.type === type
+				item.term === term && item.type === type && item.taxonomy === taxonomy
 			);
 		} ) || [];
 		setMeta( {
@@ -106,7 +106,7 @@ export const DatetimeControl = ( {
 
 	const getDatetime = ( format = TIMEZONELESS_FORMAT ) => {
 		const val = meta?.schedule_terms?.find( ( item ) => {
-			return item.term === term && item.type === type;
+			return item.term === term && item.type === type && item.taxonomy === taxonomy;
 		} );
 
 		if ( val?.datetime ) {
