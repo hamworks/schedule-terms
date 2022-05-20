@@ -23,6 +23,8 @@ interface Term {
 
 interface Taxonomy {
 	slug: string;
+	name: string;
+	description: string;
 }
 
 interface Props {
@@ -41,7 +43,7 @@ const ControlUI = ( { taxonomies, terms, currentPostType }: Props ) => {
 					  terms[ taxonomy.slug ]?.map( ( term ) => (
 						  <div key={ term.id }>
 							  <h4>
-								  { taxonomy.slug }: { term.name }
+								  { taxonomy.name }: { term.name }
 							  </h4>
 							  <DatetimeControl
 								  label={ __( 'Attach', 'schedule-terms' ) }
