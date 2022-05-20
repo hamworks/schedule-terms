@@ -104,16 +104,12 @@ abstract class UI {
 
 		add_action( "wp_ajax_{$this->meta_key}_terms", array( $this, 'ajax_update' ) );
 
-		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
-		add_filter( 'get_terms_orderby', array( $this, 'get_terms_orderby' ), 10, 3 );
-
 		foreach ( $this->taxonomies as $value ) {
 
 			// Has column?
 			if ( true === $this->has_column ) {
 				add_filter( "manage_edit-{$value}_columns", array( $this, 'add_column_header' ) );
 				add_filter( "manage_{$value}_custom_column", array( $this, 'add_column_value' ), 10, 3 );
-				add_filter( "manage_edit-{$value}_sortable_columns", array( $this, 'sortable_columns' ) );
 			}
 
 			// Has fields?
@@ -143,89 +139,6 @@ abstract class UI {
 		if ( true === $this->has_quick ) {
 			add_action( 'quick_edit_custom_box', array( $this, 'quick_edit_meta' ), 10, 3 );
 		}
-	}
-
-	/** Get Terms *************************************************************/
-
-	/**
-	 * Filter `get_terms_orderby` and tweak for meta_query orderby's.
-	 *
-	 * @param string   $orderby `ORDERBY` clause of the terms query.
-	 * @param array    $args An array of term query arguments.
-	 * @param string[] $taxonomies An array of taxonomy names.
-	 *
-	 * @return string
-	 */
-	public function get_terms_orderby( string $orderby = '', array $args = array(), array $taxonomies = array() ): string {
-
-		// Bail if not a target taxonomy.
-		if ( ! $this->is_taxonomy( $taxonomies ) ) {
-			return $orderby;
-		}
-
-		// Ordering by meta key.
-		if ( filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING ) === $this->meta_key ) {
-			$orderby = 'meta_value';
-		}
-
-		return $orderby;
-	}
-
-	/**
-	 * Filter get_terms() and maybe add `meta_query`
-	 *
-	 * @param string[] $clauses Array of query SQL clauses.
-	 * @param string[] $taxonomies An array of taxonomy names.
-	 * @param array    $args An array of term query arguments.
-	 *
-	 * @return string[]
-	 */
-	public function terms_clauses( array $clauses = array(), array $taxonomies = array(), array $args = array() ): array {
-		global $wpdb;
-
-		if ( ! $this->is_taxonomy( $taxonomies ) ) {
-			return $clauses;
-		}
-
-		// Default allowed keys & primary key.
-		$allowed_keys = array( $this->meta_key );
-
-		// Set allowed keys.
-		$allowed_keys[] = 'meta_value';
-		$allowed_keys[] = 'meta_value_num';
-
-		// Tweak orderby.
-		$orderby = $args['orderby'] ?? '';
-
-		// Bail if no orderby or allowed_keys.
-		if ( ! in_array( $orderby, $allowed_keys, true ) ) {
-			return $clauses;
-		}
-
-		// Join term meta data.
-		$clauses['join'] .= " INNER JOIN $wpdb->termmeta AS tm ON t.term_id = tm.term_id";
-
-		// Maybe order by term meta.
-		switch ( $args['orderby'] ) {
-			case $this->meta_key:
-			case 'meta_value':
-				if ( ! empty( $this->key_type ) ) {
-					$clauses['orderby'] = 'ORDER BY CAST(tm.meta_value AS tm)';
-				} else {
-					$clauses['orderby'] = 'ORDER BY tm.meta_value';
-				}
-				$clauses['fields'] .= ', tm.*';
-				$clauses['where']  .= " AND tm.meta_key = '$this->meta_key'";
-				break;
-			case 'meta_value_num':
-				$clauses['orderby'] = 'ORDER BY tm.meta_value+0';
-				$clauses['fields'] .= ', tm.*';
-				$clauses['where']  .= " AND tm.meta_key = '$this->meta_key'";
-				break;
-		}
-
-		// Return maybe modified clauses.
-		return $clauses;
 	}
 
 	/** Assets ****************************************************************/
@@ -340,20 +253,6 @@ abstract class UI {
 		echo wp_kses_post( $retval );
 	}
 
-	/**
-	 * Allow sorting by this `meta_key`
-	 *
-	 * @param string[] $columns columns.
-	 *
-	 * @return string[]
-	 * @since 2.0.0
-	 */
-	public function sortable_columns( array $columns = array() ): array {
-		// phpcs:ignore
-		$columns[ $this->meta_key ] = $this->meta_key;
-
-		return $columns;
-	}
 
 	/**
 	 * Add `meta_key` to term when updating
