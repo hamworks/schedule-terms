@@ -16,12 +16,13 @@ class Plugin {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$meta_key = 'schedule_terms_active';
+		$term_meta_key = 'schedule_terms_active';
+		$post_meta_key = 'schedule_terms';
 		new Assets();
-		new Term_UI( __DIR__, $meta_key );
-		new Term_Meta( $meta_key );
-		new Post_Meta( 'schedule_terms' );
-		new Term_Manager( 'schedule_terms' );
+		new Term_UI( __DIR__, $term_meta_key );
+		new Term_Meta( $term_meta_key );
+		new Post_Meta( $post_meta_key );
+		new Term_Manager( $post_meta_key, $term_meta_key );
 	}
 
 }

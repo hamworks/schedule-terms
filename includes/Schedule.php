@@ -14,6 +14,8 @@ use WP_Term;
  */
 class Schedule {
 
+	const ATTACH = 'attach';
+	const DETACH = 'detach';
 
 	/**
 	 * Schedule tyoe.
@@ -42,12 +44,13 @@ class Schedule {
 	 * @var string
 	 */
 	private $datetime;
+
 	/**
-	 * Meta value.
+	 * WP_Term object cache.
 	 *
-	 * @var array{ type: string, taxonomy: string, term: string, datetime: string }
+	 * @var WP_Term
 	 */
-	private $values;
+	private $wp_term;
 
 	/**
 	 * Constructor.
@@ -55,7 +58,6 @@ class Schedule {
 	 * @param array{ type: string, taxonomy: string, term: string, datetime: string } $values values.
 	 */
 	public function __construct( array $values ) {
-		$this->values   = $values;
 		$this->type     = $values['type'];
 		$this->taxonomy = $values['taxonomy'];
 		$this->term     = $values['term'];
@@ -111,10 +113,24 @@ class Schedule {
 	/**
 	 * Get term slug.
 	 *
+	 * @return string
+	 */
+	public function get_term(): string {
+		return $this->term;
+	}
+
+	/**
+	 * Get WP_Term.
+	 *
 	 * @return ?WP_Term
 	 */
-	public function get_term(): ?WP_Term {
+	public function get_wp_term(): ?WP_Term {
+		if ( $this->wp_term ) {
+			return $this->wp_term;
+		}
+
 		$term = get_term_by( 'slug', $this->term, $this->taxonomy );
+
 		if ( is_wp_error( $term ) ) {
 			return null;
 		}
@@ -123,15 +139,8 @@ class Schedule {
 			return null;
 		}
 
-		return $term;
-	}
+		$this->wp_term = $term;
 
-	/**
-	 * Get meta value.
-	 *
-	 * @return array
-	 */
-	public function get_values(): array {
-		return $this->values;
+		return $this->wp_term;
 	}
 }
