@@ -8,8 +8,7 @@
         }
     ],
     "require": {
-        "php": ">=7.3",
-        "php-di/php-di": "^6.3"
+        "php": ">=7.3"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "*",
@@ -23,7 +22,6 @@
     "autoload": {
         "psr-4": {
             "HAMWORKS\\WP\\Schedule_Terms\\": "./includes",
-            "JJJ\\WP\\Term\\Meta\\": "./lib/JJJ/WP/Term/Meta",
             "HAMWORKS\\WP\\Schedule_Terms\\Tests\\": "./tests"
         }
     },
