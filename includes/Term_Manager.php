@@ -35,6 +35,7 @@ class Term_Manager {
 	public function __construct( string $post_meta_key, int $time = null ) {
 		$this->post_meta_key = $post_meta_key;
 		$this->time          = $time ?? time();
+		add_action( 'wp_after_insert_post', array( $this, 'update_post_term_relations' ), 100, 1 );
 		add_action( 'wp_after_insert_post', array( $this, 'update_schedule' ), 100, 1 );
 		add_action( 'schedule_terms_attach_post_term_relations', array( $this, 'attach_post_term_relations' ), 10, 4 );
 		add_action( 'schedule_terms_detach_post_term_relations', array( $this, 'detach_post_term_relations' ), 11, 4 );
@@ -79,14 +80,23 @@ class Term_Manager {
 	}
 
 	/**
+	 * Update post term relations.
+	 *
+	 * @param int $post_id Post id.
+	 *
+	 * @return void
+	 */
+	public function update_post_term_relations( int $post_id ) {
+		$this->attach_post_term_relations( $post_id );
+		$this->detach_post_term_relations( $post_id );
+	}
+
+	/**
 	 * Scheduled update.
 	 *
 	 * @param int $post_id post ID.
 	 */
 	public function update_schedule( int $post_id ) {
-		$this->attach_post_term_relations( $post_id );
-		$this->detach_post_term_relations( $post_id );
-
 		foreach ( $this->get_schedules( $post_id ) as $schedule ) {
 			if ( ! $schedule->is_expired( $this->time ) ) {
 				$time   = $schedule->get_timestamp();
