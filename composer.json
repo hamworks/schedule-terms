@@ -16,7 +16,6 @@
         "squizlabs/php_codesniffer": "*",
         "wp-coding-standards/wpcs": "*",
         "wp-phpunit/wp-phpunit": "^5.9.3",
-
         "yoast/phpunit-polyfills": "^1.0.1"
     },
     "autoload": {
@@ -32,9 +31,6 @@
         "phpcs": "phpcs --standard=./phpcs.xml.dist"
     },
     "config": {
-        "platform": {
-            "php": "7.2"
-        },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
