@@ -12,10 +12,7 @@
  * Version: 1.1.1
  *
  * @package Schedule_Terms
- *
  */
-
-
 
 use HAMWORKS\WP\Schedule_Terms\Plugin;
 
