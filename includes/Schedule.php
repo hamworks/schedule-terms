@@ -119,6 +119,10 @@ class Schedule {
 			return null;
 		}
 
+		if ( ! $term ) {
+			return null;
+		}
+
 		return $term;
 	}
 

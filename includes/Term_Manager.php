@@ -29,7 +29,7 @@ class Term_Manager {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $post_meta_key Post meta key.
+	 * @param string   $post_meta_key Post meta key.
 	 * @param int|null $time timestamp.
 	 */
 	public function __construct( string $post_meta_key, int $time = null ) {
@@ -91,11 +91,11 @@ class Term_Manager {
 			if ( ! $schedule->is_expired( $this->time ) ) {
 				$time   = $schedule->get_timestamp();
 				$params = array( $post_id, $schedule->get_taxonomy(), $schedule->get_term() );
-				wp_clear_scheduled_hook( 'schedule_terms_attach_post_term_relations', $params );
-				wp_clear_scheduled_hook( 'schedule_terms_detach_post_term_relations', $params );
 				if ( $schedule->get_type() === 'attach' ) {
+					wp_clear_scheduled_hook( 'schedule_terms_attach_post_term_relations', $params );
 					wp_schedule_single_event( $time, 'schedule_terms_attach_post_term_relations', $params );
 				} else {
+					wp_clear_scheduled_hook( 'schedule_terms_detach_post_term_relations', $params );
 					wp_schedule_single_event( $time, 'schedule_terms_detach_post_term_relations', $params );
 				}
 			}
@@ -113,7 +113,9 @@ class Term_Manager {
 		foreach ( $this->get_filtered_schedules( $post_id, 'attach' ) as $schedule ) {
 			if ( $schedule->is_expired( $this->time ) ) {
 				$term = $schedule->get_term();
-				wp_set_post_terms( $post_id, array( $term->term_id ), $schedule->get_taxonomy(), true );
+				if ( $term ) {
+					wp_set_post_terms( $post_id, array( $term->term_id ), $schedule->get_taxonomy(), true );
+				}
 			}
 		}
 	}
@@ -129,7 +131,9 @@ class Term_Manager {
 		foreach ( $this->get_filtered_schedules( $post_id, 'detach' ) as $schedule ) {
 			if ( $schedule->is_expired( $this->time ) ) {
 				$term = $schedule->get_term();
-				wp_remove_object_terms( $post_id, $term->term_id, $schedule->get_taxonomy() );
+				if ( $term ) {
+					wp_remove_object_terms( $post_id, $term->term_id, $schedule->get_taxonomy() );
+				}
 			}
 		}
 	}
