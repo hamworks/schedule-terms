@@ -18,7 +18,22 @@ Automatically set and unset the term when the time is up.
 
 Check the "use schedule" checkbox in the category or tag management screen. You can set a time for each post to be added or removed from the category or tag.
 
+### Usage
+
+1. Go to category,tag or custom taxonomy management screen.
+2. Check the "Use scheduling" checkbox.
+3. Goto edit post screen then set datetime in "Schedule Terms" panel.
+
+## Screenshots
+
+1. Activate scheduling.
+2. "Schedule Terms" panel
+3. Set datetime in "Schedule Terms" panel.
+
 ## Changelog
+
+### 1.1.2
+* Bug fix.
 
 ### 1.0.2
 * fix ci.
