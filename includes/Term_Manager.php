@@ -14,6 +14,8 @@ use WP_Term;
  */
 class Term_Manager {
 
+	public const SCHEDULED_HOOK_NAME = 'schedule_terms_update_post_term_relations';
+
 	/**
 	 * Post meta key for save term info.
 	 *
@@ -49,7 +51,7 @@ class Term_Manager {
 		$this->time          = $time ?? time();
 		add_action( 'wp_after_insert_post', array( $this, 'update_post_term_relations' ), 100, 1 );
 		add_action( 'wp_after_insert_post', array( $this, 'update_schedule' ), 100, 1 );
-		add_action( 'schedule_terms_update_post_term_relations', array( $this, 'update_post_term_relations' ), 10, 4 );
+		add_action( self::SCHEDULED_HOOK_NAME, array( $this, 'update_post_term_relations' ), 10, 4 );
 	}
 
 	/**
@@ -63,6 +65,7 @@ class Term_Manager {
 		if ( ! $term ) {
 			return false;
 		}
+
 		return ! ! get_term_meta( $term->term_id, $this->term_meta_key, true );
 	}
 
@@ -139,8 +142,8 @@ class Term_Manager {
 			if ( ! $schedule->is_expired( $this->time ) ) {
 				$time   = $schedule->get_timestamp();
 				$params = array( $post_id, array( $schedule->get_type() ), $schedule->get_taxonomy(), $schedule->get_term() );
-				wp_clear_scheduled_hook( 'schedule_terms_update_post_term_relations', $params );
-				wp_schedule_single_event( $time, 'schedule_terms_update_post_term_relations', $params );
+				wp_clear_scheduled_hook( self::SCHEDULED_HOOK_NAME, $params );
+				wp_schedule_single_event( $time, self::SCHEDULED_HOOK_NAME, $params );
 			}
 		}
 	}

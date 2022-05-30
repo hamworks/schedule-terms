@@ -14,8 +14,8 @@ use WP_Term;
  */
 class Schedule {
 
-	const ATTACH = 'attach';
-	const DETACH = 'detach';
+	public const ATTACH = 'attach';
+	public const DETACH = 'detach';
 
 	/**
 	 * Schedule tyoe.
