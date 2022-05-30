@@ -33,19 +33,19 @@ interface ScheduleTermsMeta {
 }
 
 interface PostMeta {
-	[ key: string ]: any;
+	[key: string]: any;
 
 	schedule_terms: ScheduleTermsMeta[];
 }
 
-export const DatetimeControl = ( {
+export const DatetimeControl = ({
 	term,
 	taxonomy,
 	label,
 	postType,
 	type,
-}: DatetimeControlProps ) => {
-	const [ meta, setMeta ]: [ PostMeta, ( meta: PostMeta ) => void ] = useEntityProp(
+}: DatetimeControlProps) => {
+	const [meta, setMeta]: [PostMeta, (meta: PostMeta) => void] = useEntityProp(
 		"postType",
 		postType,
 		"meta"
@@ -54,13 +54,13 @@ export const DatetimeControl = ( {
 	const dateSettings = getSettings();
 
 	// @ts-ignore
-	const [ siteFormat = dateSettings.formats.date ] = useEntityProp(
+	const [siteFormat = dateSettings.formats.date] = useEntityProp(
 		"root",
 		"site",
 		"date_format"
 	);
 	// @ts-ignore
-	const [ siteTimeFormat = dateSettings.formats.time ] = useEntityProp(
+	const [siteTimeFormat = dateSettings.formats.time] = useEntityProp(
 		"root",
 		"site",
 		"time_format"
@@ -69,93 +69,100 @@ export const DatetimeControl = ( {
 	const getTimezoneOffsetString = () => {
 		// @ts-ignore
 		const { timezone } = dateSettings;
-		const [ hour, time ] = timezone.offset.toString().split( "." );
-		return `${ Number( hour ) > 0 ? "+" : "-" }${ String(
-			Math.abs( hour )
-		).padStart( 2, "0" ) }:${ String(
-			Math.floor( Number( `0.${ time || 0 }` ) * 60 )
-		).padStart( 2, "0" ) }`;
+		const [hour, time] = timezone.offset.toString().split(".");
+		return `${Number(hour) > 0 ? "+" : "-"}${String(
+			Math.abs(hour)
+		).padStart(2, "0")}:${String(
+			Math.floor(Number(`0.${time || 0}`) * 60)
+		).padStart(2, "0")}`;
 	};
 
-	const updateDatetime = ( datetime: string ) => {
-		const otherItems = meta?.schedule_terms?.filter( ( item ) => {
-			return !(
-				item.term === term && item.type === type && item.taxonomy === taxonomy
-			);
-		} ) || [];
-		setMeta( {
+	const updateDatetime = (datetime: string) => {
+		const otherItems =
+			meta?.schedule_terms?.filter((item) => {
+				return !(
+					item.term === term &&
+					item.type === type &&
+					item.taxonomy === taxonomy
+				);
+			}) || [];
+		setMeta({
 			...meta,
 			schedule_terms: [
 				...otherItems,
 				datetime
 					? {
-						term,
-						taxonomy,
-						type,
-						// convert to UTC.
-						datetime: moment(
-							`${ datetime }${ getTimezoneOffsetString() }`
-						)
-						.utc()
-						.format(),
-					}
+							term,
+							taxonomy,
+							type,
+							// convert to UTC.
+							datetime: moment(
+								`${datetime}${getTimezoneOffsetString()}`
+							)
+								.utc()
+								.format(),
+					  }
 					: null,
-			].filter( ( e ): e is ScheduleTermsMeta => e !== null ),
-		} );
+			].filter((e): e is ScheduleTermsMeta => e !== null),
+		});
 	};
 
-	const getDatetime = ( format = TIMEZONELESS_FORMAT ) => {
-		const val = meta?.schedule_terms?.find( ( item ) => {
-			return item.term === term && item.type === type && item.taxonomy === taxonomy;
-		} );
+	const getDatetime = (format = TIMEZONELESS_FORMAT) => {
+		const val = meta?.schedule_terms?.find((item) => {
+			return (
+				item.term === term &&
+				item.type === type &&
+				item.taxonomy === taxonomy
+			);
+		});
 
-		if ( val?.datetime ) {
-			return moment( val.datetime )
-			.utcOffset( getTimezoneOffsetString() )
-			.format( format );
+		if (val?.datetime) {
+			return moment(val.datetime)
+				.utcOffset(getTimezoneOffsetString())
+				.format(format);
 		}
 
 		return undefined;
 	};
 
-
 	const datetime = getDatetime();
 
 	return (
 		// @ts-ignore
-		<PanelRow ref={ anchorRef }>
-			<span>{ label }</span>
+		<PanelRow ref={anchorRef}>
+			<span>{label}</span>
 			<Dropdown
 				// @ts-ignore
-				popoverProps={ { anchorRef: anchorRef.current } }
+				popoverProps={{ anchorRef: anchorRef.current }}
 				position="bottom left"
-				renderToggle={ ( { onToggle, isOpen } ) => (
+				renderToggle={({ onToggle, isOpen }) => (
 					<>
 						<Button
-							onClick={ onToggle }
-							aria-expanded={ isOpen }
+							onClick={onToggle}
+							aria-expanded={isOpen}
 							variant="tertiary"
 						>
-							{
-								datetime
-									// @ts-ignore
-									? dateI18n(
-										`${ siteFormat } ${ siteTimeFormat }`,
+							{datetime
+								? // @ts-ignore
+								  dateI18n(
+										`${siteFormat} ${siteTimeFormat}`,
 										datetime
-									)
-									: __( "none", "schedule-terms" )
-							}
+								  )
+								: __("none", "schedule-terms")}
 						</Button>
 					</>
-				) }
-				renderContent={ () => (
+				)}
+				renderContent={({ onClose }) => (
 					<div>
 						<DateTimePicker
-							currentDate={ datetime }
-							onChange={ ( newDate ) => updateDatetime( newDate ) }
+							currentDate={datetime}
+							onChange={(newDate) => updateDatetime(newDate)}
 						/>
+						<Button variant="secondary" onClick={onClose}>
+							{__("Close", "schedule-terms")}
+						</Button>
 					</div>
-				) }
+				)}
 			/>
 		</PanelRow>
 	);
