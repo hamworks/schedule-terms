@@ -53,21 +53,20 @@ export const DatetimeControl = ( {
 	const dateSettings = getSettings();
 
 	// @ts-ignore
-	const [ siteFormat = dateSettings.formats.date ] = useEntityProp(
+	const [ siteFormat = dateSettings?.formats.date ] = useEntityProp(
 		'root',
 		'site',
 		'date_format'
 	);
 	// @ts-ignore
-	const [ siteTimeFormat = dateSettings.formats.time ] = useEntityProp(
+	const [ siteTimeFormat = dateSettings?.formats.time ] = useEntityProp(
 		'root',
 		'site',
 		'time_format'
 	);
 
 	const is12HourTime = /a(?!\\)/i.test(
-		// @ts-ignore
-		dateSettings?.formats?.time
+		siteTimeFormat
 			.toLowerCase() // Test only the lower case a.
 			.replace( /\\\\/g, '' ) // Replace "//" with empty strings.
 			.split( '' )
