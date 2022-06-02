@@ -32,7 +32,7 @@ Check the "use schedule" checkbox in the category or tag management screen. You 
 
 ## Changelog
 
-### 1.2.1
+### 1.2.2
 * Load translation.
 * Fix DateTimePicker format.
 
