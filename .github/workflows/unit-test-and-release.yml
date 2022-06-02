@@ -74,7 +74,6 @@ jobs:
                   coverage: xdebug #optional, setup coverage driver
               if: contains(github.ref, 'tags/')
 
-
             - name: Composer install
               run: composer install --optimize-autoloader --prefer-dist --no-dev
               if: contains(github.ref, 'tags/')

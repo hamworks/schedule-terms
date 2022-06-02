@@ -1,102 +1,101 @@
 // @ts-ignore
-import { useEntityProp } from "@wordpress/core-data";
-import { useRef } from "@wordpress/element";
-import { __ } from "@wordpress/i18n";
+import { useEntityProp } from '@wordpress/core-data';
+import { useRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import {
 	Button,
 	DateTimePicker,
 	Dropdown,
 	PanelRow,
-} from "@wordpress/components";
+} from '@wordpress/components';
 import {
 	dateI18n,
 	__experimentalGetSettings as getSettings,
-} from "@wordpress/date";
+} from '@wordpress/date';
 // @ts-ignore
-import moment from "moment";
+import moment from 'moment';
 
-const TIMEZONELESS_FORMAT = "YYYY-MM-DDTHH:mm:ss";
+const TIMEZONELESS_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
 interface DatetimeControlProps {
 	label: string;
 	term: string;
 	taxonomy: string;
 	postType: string;
-	type: "attach" | "detach";
+	type: 'attach' | 'detach';
 }
 
 interface ScheduleTermsMeta {
-	type: "attach" | "detach";
+	type: 'attach' | 'detach';
 	datetime: string;
 	term: string;
 	taxonomy: string;
 }
 
 interface PostMeta {
-	[key: string]: any;
+	[ key: string ]: any;
 
 	schedule_terms: ScheduleTermsMeta[];
 }
 
-export const DatetimeControl = ({
+export const DatetimeControl = ( {
 	term,
 	taxonomy,
 	label,
 	postType,
 	type,
-}: DatetimeControlProps) => {
-	const [meta, setMeta]: [PostMeta, (meta: PostMeta) => void] = useEntityProp(
-		"postType",
-		postType,
-		"meta"
-	);
+}: DatetimeControlProps ) => {
+	const [ meta, setMeta ]: [
+		PostMeta,
+		( meta: PostMeta ) => void
+	] = useEntityProp( 'postType', postType, 'meta' );
 	const anchorRef = useRef();
 	const dateSettings = getSettings();
 
 	// @ts-ignore
-	const [siteFormat = dateSettings.formats.date] = useEntityProp(
-		"root",
-		"site",
-		"date_format"
+	const [ siteFormat = dateSettings.formats.date ] = useEntityProp(
+		'root',
+		'site',
+		'date_format'
 	);
 	// @ts-ignore
-	const [siteTimeFormat = dateSettings.formats.time] = useEntityProp(
-		"root",
-		"site",
-		"time_format"
+	const [ siteTimeFormat = dateSettings.formats.time ] = useEntityProp(
+		'root',
+		'site',
+		'time_format'
 	);
 
 	const is12HourTime = /a(?!\\)/i.test(
 		// @ts-ignore
 		dateSettings?.formats?.time
-		        .toLowerCase() // Test only the lower case a.
-		        .replace( /\\\\/g, '' ) // Replace "//" with empty strings.
-		        .split( '' )
-		        .reverse()
-		        .join( '' ) // Reverse the string and test for "a" not followed by a slash.
+			.toLowerCase() // Test only the lower case a.
+			.replace( /\\\\/g, '' ) // Replace "//" with empty strings.
+			.split( '' )
+			.reverse()
+			.join( '' ) // Reverse the string and test for "a" not followed by a slash.
 	);
 
 	const getTimezoneOffsetString = () => {
 		// @ts-ignore
 		const { timezone } = dateSettings;
-		const [hour, time] = timezone.offset.toString().split(".");
-		return `${Number(hour) > 0 ? "+" : "-"}${String(
-			Math.abs(hour)
-		).padStart(2, "0")}:${String(
-			Math.floor(Number(`0.${time || 0}`) * 60)
-		).padStart(2, "0")}`;
+		const [ hour, time ] = timezone.offset.toString().split( '.' );
+		return `${ Number( hour ) > 0 ? '+' : '-' }${ String(
+			Math.abs( hour )
+		).padStart( 2, '0' ) }:${ String(
+			Math.floor( Number( `0.${ time || 0 }` ) * 60 )
+		).padStart( 2, '0' ) }`;
 	};
 
-	const updateDatetime = (datetime: string) => {
+	const updateDatetime = ( datetime: string ) => {
 		const otherItems =
-			meta?.schedule_terms?.filter((item) => {
-				return !(
+			meta?.schedule_terms?.filter( ( item ) => {
+				return ! (
 					item.term === term &&
 					item.type === type &&
 					item.taxonomy === taxonomy
 				);
-			}) || [];
-		setMeta({
+			} ) || [];
+		setMeta( {
 			...meta,
 			schedule_terms: [
 				...otherItems,
@@ -107,29 +106,29 @@ export const DatetimeControl = ({
 							type,
 							// convert to UTC.
 							datetime: moment(
-								`${datetime}${getTimezoneOffsetString()}`
+								`${ datetime }${ getTimezoneOffsetString() }`
 							)
 								.utc()
 								.format(),
 					  }
 					: null,
-			].filter((e): e is ScheduleTermsMeta => e !== null),
-		});
+			].filter( ( e ): e is ScheduleTermsMeta => e !== null ),
+		} );
 	};
 
-	const getDatetime = (format = TIMEZONELESS_FORMAT) => {
-		const val = meta?.schedule_terms?.find((item) => {
+	const getDatetime = ( format = TIMEZONELESS_FORMAT ) => {
+		const val = meta?.schedule_terms?.find( ( item ) => {
 			return (
 				item.term === term &&
 				item.type === type &&
 				item.taxonomy === taxonomy
 			);
-		});
+		} );
 
-		if (val?.datetime) {
-			return moment(val.datetime)
-				.utcOffset(getTimezoneOffsetString())
-				.format(format);
+		if ( val?.datetime ) {
+			return moment( val.datetime )
+				.utcOffset( getTimezoneOffsetString() )
+				.format( format );
 		}
 
 		return undefined;
@@ -139,41 +138,43 @@ export const DatetimeControl = ({
 
 	return (
 		// @ts-ignore
-		<PanelRow ref={anchorRef}>
-			<span>{label}</span>
+		<PanelRow ref={ anchorRef }>
+			<span>{ label }</span>
 			<Dropdown
 				// @ts-ignore
-				popoverProps={{ anchorRef: anchorRef.current }}
+				popoverProps={ { anchorRef: anchorRef.current } }
 				position="bottom left"
-				renderToggle={({ onToggle, isOpen }) => (
+				renderToggle={ ( { onToggle, isOpen } ) => (
 					<>
 						<Button
-							onClick={onToggle}
-							aria-expanded={isOpen}
+							onClick={ onToggle }
+							aria-expanded={ isOpen }
 							variant="tertiary"
 						>
-							{datetime
+							{ datetime
 								? // @ts-ignore
 								  dateI18n(
-										`${siteFormat} ${siteTimeFormat}`,
+										`${ siteFormat } ${ siteTimeFormat }`,
 										datetime
 								  )
-								: __("none", "schedule-terms")}
+								: __( 'none', 'schedule-terms' ) }
 						</Button>
 					</>
-				)}
-				renderContent={({ onClose }) => (
+				) }
+				renderContent={ ( { onClose } ) => (
 					<div>
 						<DateTimePicker
 							is12Hour={ is12HourTime }
-							currentDate={datetime}
-							onChange={(newDate) => updateDatetime(newDate)}
+							currentDate={ datetime }
+							onChange={ ( newDate ) =>
+								updateDatetime( newDate )
+							}
 						/>
-						<Button variant="secondary" onClick={onClose}>
-							{__("Close", "schedule-terms")}
+						<Button variant="secondary" onClick={ onClose }>
+							{ __( 'Close', 'schedule-terms' ) }
 						</Button>
 					</div>
-				)}
+				) }
 			/>
 		</PanelRow>
 	);
