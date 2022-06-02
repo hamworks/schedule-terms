@@ -66,6 +66,16 @@ export const DatetimeControl = ({
 		"time_format"
 	);
 
+	const is12HourTime = /a(?!\\)/i.test(
+		// @ts-ignore
+		dateSettings?.formats?.time
+		        .toLowerCase() // Test only the lower case a.
+		        .replace( /\\\\/g, '' ) // Replace "//" with empty strings.
+		        .split( '' )
+		        .reverse()
+		        .join( '' ) // Reverse the string and test for "a" not followed by a slash.
+	);
+
 	const getTimezoneOffsetString = () => {
 		// @ts-ignore
 		const { timezone } = dateSettings;
@@ -155,6 +165,7 @@ export const DatetimeControl = ({
 				renderContent={({ onClose }) => (
 					<div>
 						<DateTimePicker
+							is12Hour={ is12HourTime }
 							currentDate={datetime}
 							onChange={(newDate) => updateDatetime(newDate)}
 						/>
