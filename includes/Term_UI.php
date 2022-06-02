@@ -67,6 +67,7 @@ class Term_UI extends UI {
 			$asset_file['version'],
 			true
 		);
+		wp_set_script_translations( 'schedule-terms-admin', 'schedule-terms' );
 	}
 
 	/**

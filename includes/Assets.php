@@ -41,6 +41,7 @@ class Assets {
 			$asset_file['version'],
 			true
 		);
+		wp_set_script_translations( 'schedule-terms', 'schedule-terms' );
 	}
 
 }
