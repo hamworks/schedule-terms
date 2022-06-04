@@ -21,7 +21,7 @@
     "autoload": {
         "psr-4": {
             "HAMWORKS\\WP\\Schedule_Terms\\": "./includes",
-            "HAMWORKS\\WP\\Schedule_Terms\\Tests\\": "./tests"
+            "HAMWORKS\\WP\\Schedule_Terms\\Tests\\": "./tests/php"
         }
     },
     "scripts": {

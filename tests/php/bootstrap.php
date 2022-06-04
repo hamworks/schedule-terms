@@ -6,7 +6,7 @@
  */
 
 // Require composer dependencies.
-require_once dirname( __DIR__ ) . '/vendor/autoload.php';
+require_once dirname( dirname( __DIR__ ) ) . '/vendor/autoload.php';
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 
@@ -26,7 +26,7 @@ if ( ! $_tests_dir ) {
 
 // See if we're installed inside an existing WP dev instance.
 if ( ! $_tests_dir ) {
-	$_try_tests_dir = __DIR__ . '/../../../../../tests/phpunit';
+	$_try_tests_dir = __DIR__ . '/../../../../../../tests/phpunit';
 	if ( file_exists( $_try_tests_dir . '/includes/functions.php' ) ) {
 		$_tests_dir = $_try_tests_dir;
 	}
