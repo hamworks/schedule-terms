@@ -231,14 +231,14 @@ abstract class UI {
 	 *
 	 * @return string|void
 	 */
-	public function add_column_value( string $empty = '', string $custom_column = '', int $term_id = 0 ) {
+	public function add_column_value( string $empty = null, string $custom_column = null, int $term_id = 0 ) {
 		if ( ! filter_input( INPUT_GET, 'taxonomy' ) && ! filter_input( INPUT_POST, 'taxonomy' ) ) {
-			return $empty;
+			return $empty ?? '';
 		}
 
 		// Bail if no taxonomy passed or not on the `meta_key` column.
 		if ( ( $this->meta_key !== $custom_column ) || ! empty( $empty ) ) {
-			return $empty;
+			return $empty ?? '';
 		}
 
 		// Get the metadata.
