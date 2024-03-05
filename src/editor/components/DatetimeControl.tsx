@@ -2,16 +2,17 @@
 import { useEntityProp } from '@wordpress/core-data';
 import { useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { closeSmall } from '@wordpress/icons';
 import {
 	Button,
 	DateTimePicker,
 	Dropdown,
 	PanelRow,
+	__experimentalHStack as HStack,
+	__experimentalHeading as Heading,
+	__experimentalSpacer as Spacer,
 } from '@wordpress/components';
-import {
-	dateI18n,
-	__experimentalGetSettings as getSettings,
-} from '@wordpress/date';
+import { dateI18n, getSettings } from '@wordpress/date';
 // @ts-ignore
 import moment from 'moment';
 
@@ -45,10 +46,9 @@ export const DatetimeControl = ( {
 	postType,
 	type,
 }: DatetimeControlProps ) => {
-	const [ meta, setMeta ]: [
-		PostMeta,
-		( meta: PostMeta ) => void
-	] = useEntityProp( 'postType', postType, 'meta' );
+	// @ts-ignore
+	const [ meta, setMeta ]: [ PostMeta, ( meta: PostMeta ) => void ] =
+		useEntityProp( 'postType', postType, 'meta' );
 	const anchorRef = useRef();
 	const dateSettings = getSettings();
 
@@ -79,13 +79,13 @@ export const DatetimeControl = ( {
 		const { timezone } = dateSettings;
 		const [ hour, time ] = timezone.offset.toString().split( '.' );
 		return `${ Number( hour ) > 0 ? '+' : '-' }${ String(
-			Math.abs( hour )
+			Math.abs( Number( hour ) )
 		).padStart( 2, '0' ) }:${ String(
 			Math.floor( Number( `0.${ time || 0 }` ) * 60 )
 		).padStart( 2, '0' ) }`;
 	};
 
-	const updateDatetime = ( datetime: string ) => {
+	const updateDatetime = ( datetime: string | null ) => {
 		const otherItems =
 			meta?.schedule_terms?.filter( ( item ) => {
 				return ! (
@@ -142,7 +142,6 @@ export const DatetimeControl = ( {
 			<Dropdown
 				// @ts-ignore
 				popoverProps={ { anchorRef: anchorRef.current } }
-				position="bottom left"
 				renderToggle={ ( { onToggle, isOpen } ) => (
 					<>
 						<Button
@@ -161,7 +160,23 @@ export const DatetimeControl = ( {
 					</>
 				) }
 				renderContent={ ( { onClose } ) => (
-					<div>
+					<div style={ { padding: 8 } }>
+						<div style={ { marginBottom: '1em' } }>
+							<HStack>
+								{ /* @ts-ignore */ }
+								<Heading level={ 2 } size={ 13 }>
+									{ label }
+								</Heading>
+								<Spacer />
+								<Button
+									className="block-editor-inspector-popover-header__action"
+									label={ __( 'Close' ) }
+									icon={ closeSmall }
+									onClick={ onClose }
+								/>
+							</HStack>
+						</div>
+
 						<DateTimePicker
 							is12Hour={ is12HourTime }
 							currentDate={ datetime }
@@ -169,9 +184,14 @@ export const DatetimeControl = ( {
 								updateDatetime( newDate )
 							}
 						/>
-						<Button variant="secondary" onClick={ onClose }>
-							{ __( 'Close', 'schedule-terms' ) }
-						</Button>
+						<div style={ { marginTop: '1em' } }>
+							<Button
+								variant="secondary"
+								onClick={ () => updateDatetime( null ) }
+							>
+								{ __( 'Reset', 'schedule-terms' ) }
+							</Button>
+						</div>
 					</div>
 				) }
 			/>

@@ -1,14 +1,14 @@
 # Schedule Terms
 
-Contributors:      Toro_Unit,hamworks  
-Donate link:       https://www.paypal.me/torounit  
-Tags:              schedule, term  
-Requires at least: 5.9  
-Tested up to:      6.0  
-Requires PHP:      7.4  
+Contributors:      Toro_Unit,hamworks
+Donate link:       https://www.paypal.me/torounit
+Tags:              schedule, term
+Requires at least: 5.9
+Tested up to:      6.5
+Requires PHP:      7.4
 Stable tag:        1.2.4
-License:           GPLv2 or later  
-License URI:       https://www.gnu.org/licenses/gpl-2.0.html  
+License:           GPLv2 or later
+License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
 Automatically set and unset the term when the time is up.
 
@@ -31,6 +31,11 @@ Check the "use schedule" checkbox in the category or tag management screen. You 
 3. Set datetime in "Schedule Terms" panel.
 
 ## Changelog
+
+### 1.3.0
+* Tested WordPress 6.5.
+* Update packages.
+* Add reset button.
 
 ### 1.2.2
 * Load translation.
