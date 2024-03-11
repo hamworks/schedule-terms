@@ -43,5 +43,4 @@ class Assets {
 		);
 		wp_set_script_translations( 'schedule-terms', 'schedule-terms' );
 	}
-
 }

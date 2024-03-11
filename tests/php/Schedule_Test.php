@@ -8,7 +8,7 @@
 namespace HAMWORKS\WP\Schedule_Terms\Tests;
 
 use HAMWORKS\WP\Schedule_Terms\Schedule;
-use \WP_UnitTestCase;
+use WP_UnitTestCase;
 
 /**
  * Test Class.

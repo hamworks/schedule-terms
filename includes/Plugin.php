@@ -24,5 +24,4 @@ class Plugin {
 		new Post_Meta( $post_meta_key );
 		new Term_Manager( $post_meta_key, $term_meta_key );
 	}
-
 }

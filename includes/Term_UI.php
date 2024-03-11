@@ -124,6 +124,4 @@ class Term_UI extends UI {
 		<?php esc_html_e( 'Use automatic term attach / detach.', 'schedule-posts' ); ?>
 		<?php
 	}
-
-
 }

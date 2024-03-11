@@ -152,5 +152,4 @@ class Term_Manager_Test extends WP_UnitTestCase {
 
 		return $events;
 	}
-
 }
