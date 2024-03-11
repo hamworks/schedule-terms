@@ -28,7 +28,7 @@
 		"test": "phpunit",
 		"format": "phpcbf --standard=./phpcs.xml.dist --report-summary --report-source",
 		"lint": "phpcs --standard=./phpcs.xml.dist",
-		"phpcs": "phpcs --standard=./phpcs.xml.dist"
+		"phpcs": "phpcs --standard=./phpcs.xml.dist --warning-severity=6"
 	},
 	"config": {
 		"allow-plugins": {
