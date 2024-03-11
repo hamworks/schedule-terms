@@ -6,7 +6,7 @@
 	"license": "GPL-2.0+",
 	"scripts": {
 		"wp-env": "wp-env",
-		"test-unit-php": "wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/schedule-terms/phpunit.xml.dist --verbose'",
+		"test-unit-php": "wp-env run cli --env-cwd='/var/www/html/wp-content/plugins/schedule-terms' composer test",
 		"packages-update": "wp-scripts packages-update",
 		"lint-php": "./vendor/bin/phpcs --standard=./phpcs.xml.dist --warning-severity=6",
 		"test": "wp-scripts test-unit-js",
