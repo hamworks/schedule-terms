@@ -69,7 +69,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.4
+                  php-version: 8.1
                   extensions: mbstring, intl #optional, setup extensions
                   ini-values: post_max_size=256M, short_open_tag=On #optional, setup php.ini configuration
                   coverage: xdebug #optional, setup coverage driver
